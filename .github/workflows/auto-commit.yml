@@ -31,7 +31,7 @@ jobs:
         if: steps.check_diff.outcome == 'failure'
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "139044999+github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Auto commit code format"
           git push origin ${{ github.head_ref }}
