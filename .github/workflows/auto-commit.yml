@@ -1,0 +1,37 @@
+name: Auto Format
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+      - name: Formatting
+        run: |
+          npm install
+          npm run format
+      - name: Check Diff
+        id: check_diff
+        run: |
+          git add -N .
+          git diff --name-only --exit-code
+        continue-on-error: true
+      - name: Commit
+        if: steps.check_diff.outcome == 'failure'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "139044999+github-actions@users.noreply.github.com"
+          git add .
+          git commit -m "Auto commit code format"
+          git push origin ${{ github.head_ref }}
